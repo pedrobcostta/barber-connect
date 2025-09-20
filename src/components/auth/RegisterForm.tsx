@@ -16,6 +16,8 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { validateCNPJ } from "@/lib/utils";
+import InputMask from "react-input-mask";
 
 const passwordValidation = new RegExp(
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -23,7 +25,7 @@ const passwordValidation = new RegExp(
 
 const formSchema = z.object({
     barbershopName: z.string().min(1, { message: "O nome da barbearia é obrigatório." }),
-    cnpj: z.string().min(14, { message: "O CNPJ deve ter 14 dígitos." }).max(18, { message: "Formato de CNPJ inválido."}),
+    cnpj: z.string().refine(validateCNPJ, { message: "Por favor, insira um CNPJ válido." }),
     managerName: z.string().min(1, { message: "Seu nome é obrigatório." }),
     email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
     password: z.string().regex(passwordValidation, {
@@ -61,27 +63,24 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
-    // We will use an Edge Function for manager registration later.
-    // For now, we'll use the standard signUp.
-    const { error } = await supabase.auth.signUp({
-      email: values.email,
-      password: values.password,
-      options: {
-        data: {
-          full_name: values.managerName,
-          cnpj: values.cnpj,
-          role: 'gestor',
-        }
-      }
+    const { data, error } = await supabase.functions.invoke('create-manager-and-barbershop', {
+      body: {
+        email: values.email,
+        password: values.password,
+        managerName: values.managerName,
+        cnpj: values.cnpj,
+        barbershopName: values.barbershopName,
+      },
     });
 
     setIsLoading(false);
 
-    if (error) {
-      toast.error(error.message);
+    if (error || data.error) {
+      toast.error(error?.message || data.error || "Ocorreu um erro ao criar sua conta. Tente novamente.");
     } else {
-      toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
+      toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta e poder fazer o login.");
       form.reset();
+      onSwitchToLogin();
     }
   }
 
@@ -101,7 +100,11 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             <FormItem><FormLabel style={{ color: "#0D131A" }}>Nome da Barbearia</FormLabel><FormControl><Input placeholder="Ex: Barber Shop Premium" {...field} /></FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="cnpj" render={({ field }) => (
-            <FormItem><FormLabel style={{ color: "#0D131A" }}>CNPJ</FormLabel><FormControl><Input placeholder="00.000.000/0001-00" {...field} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel style={{ color: "#0D131A" }}>CNPJ</FormLabel><FormControl>
+              <InputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur}>
+                {(inputProps: any) => <Input {...inputProps} placeholder="00.000.000/0001-00" />}
+              </InputMask>
+            </FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="managerName" render={({ field }) => (
             <FormItem><FormLabel style={{ color: "#0D131A" }}>Seu Nome Completo</FormLabel><FormControl><Input placeholder="Digite seu nome" {...field} /></FormControl><FormMessage /></FormItem>

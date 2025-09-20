@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
@@ -34,14 +36,24 @@ export function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Admin Login data:", values);
-    // Simular chamada de API bem-sucedida
-    setTimeout(() => {
-      setIsLoading(false);
+    
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error("E-mail ou senha de administrador inválidos.");
+    } else {
+      // For users with 2FA, signInWithPassword doesn't complete the login.
+      // It prepares the session for an OTP verification.
+      // We proceed to the 2FA step.
       onSuccess(values.email);
-    }, 1500);
+    }
   }
 
   return (

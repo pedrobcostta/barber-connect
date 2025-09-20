@@ -15,6 +15,8 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import InputMask from "react-input-mask";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Opa, parece que faltou seu nome!" }),
@@ -25,6 +27,7 @@ const formSchema = z.object({
 
 export function ClientRegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -54,9 +57,14 @@ export function ClientRegisterForm() {
     setIsLoading(false);
 
     if (error) {
-      toast.error(error.message);
+      if (error.message.includes('User already registered')) {
+        toast.error("Este e-mail já está cadastrado. Tente fazer login.");
+      } else {
+        toast.error(error.message);
+      }
     } else {
       toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
+      // Don't redirect immediately, user needs to confirm email first.
       form.reset();
     }
   }
@@ -84,7 +92,9 @@ export function ClientRegisterForm() {
             <FormItem>
               <FormLabel>Celular (WhatsApp)</FormLabel>
               <FormControl>
-                <Input placeholder="(00) 00000-0000" {...field} />
+                <InputMask mask="(99) 99999-9999" value={field.value} onChange={field.onChange} onBlur={field.onBlur}>
+                  {(inputProps: any) => <Input {...inputProps} placeholder="(00) 00000-0000" />}
+                </InputMask>
               </FormControl>
               <FormMessage />
             </FormItem>

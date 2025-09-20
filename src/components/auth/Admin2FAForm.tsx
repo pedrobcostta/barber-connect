@@ -18,6 +18,8 @@ import {
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   code: z.string().min(6, { message: "O código deve ter 6 dígitos." }),
@@ -29,6 +31,7 @@ type Admin2FAFormProps = {
 
 export function Admin2FAForm({ email }: Admin2FAFormProps) {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -37,15 +40,23 @@ export function Admin2FAForm({ email }: Admin2FAFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Admin 2FA code:", values.code, "for user:", email);
-    // Simular chamada de API
-    setTimeout(() => {
-      setIsLoading(false);
-      // Simular sucesso
+    
+    const { error } = await supabase.auth.verifyOtp({
+      email: email,
+      token: values.code,
+      type: 'totp',
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error("Código de verificação inválido. Tente novamente.");
+    } else {
       toast.success("Login de administrador bem-sucedido!");
-    }, 1500);
+      navigate('/dashboard');
+    }
   }
 
   return (

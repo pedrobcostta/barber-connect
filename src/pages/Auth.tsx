@@ -36,7 +36,7 @@ const AuthPage = () => {
           </blockquote>
         </div>
       </div>
-      <div className="flex items-center justify-center py-12 px-4">
+      <div className="flex h-screen items-center justify-center py-12 px-4 lg:h-auto">
         <div className="mx-auto grid w-[380px] gap-6 p-8 rounded-lg shadow-lg" style={{ backgroundColor: "#FFFFFF" }}>
           {isLoginView ? (
             <LoginForm onSwitchToRegister={() => setIsLoginView(false)} />

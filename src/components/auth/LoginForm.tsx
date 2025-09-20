@@ -16,6 +16,7 @@ import { Loader2 } from "lucide-react";
 import { ForgotPasswordDialog } from "./ForgotPasswordDialog";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
@@ -29,6 +30,7 @@ type LoginFormProps = {
 export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,10 +51,16 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     setIsLoading(false);
 
     if (error) {
-      toast.error("E-mail ou senha inválidos. Tente novamente.");
+      if (error.message === 'Invalid login credentials') {
+        toast.error("E-mail ou senha inválidos. Tente novamente.");
+      } else if (error.message === 'Email not confirmed') {
+        toast.error("Seu e-mail ainda não foi confirmado. Por favor, verifique sua caixa de entrada.");
+      } else {
+        toast.error("Ocorreu um erro ao fazer login. Tente novamente.");
+      }
     } else {
       toast.success("Login bem-sucedido!");
-      // Here you would typically redirect the user
+      navigate('/dashboard');
     }
   }
 
