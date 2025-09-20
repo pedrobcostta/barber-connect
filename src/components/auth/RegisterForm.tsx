@@ -93,7 +93,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             <FormItem><FormLabel style={{ color: "#0D131A" }}>Crie uma Senha Forte</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="confirmPassword" render={({ field }) => (
-            <FormItem><FormLabel style={{ color: "#0D131A" }}>Confirme sua Senha</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormMessage>
+            <FormItem><FormLabel style={{ color: "#0D131A" }}>Confirme sua Senha</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="terms" render={({ field }) => (
             <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md p-1">
