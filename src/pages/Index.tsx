@@ -10,12 +10,15 @@ const Index = () => {
         <p className="text-xl text-gray-600 mb-8">
           Selecione o seu perfil para continuar.
         </p>
-        <div className="flex justify-center gap-4">
-            <Button asChild>
+        <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button asChild className="w-full sm:w-auto">
                 <Link to="/auth">Acesso do Gestor</Link>
             </Button>
-            <Button asChild variant="secondary">
+            <Button asChild variant="secondary" className="w-full sm:w-auto">
                 <Link to="/barber-login">Acesso do Barbeiro</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full sm:w-auto border-accent text-accent hover:bg-accent hover:text-primary-foreground">
+                <Link to="/cliente/auth">Sou Cliente</Link>
             </Button>
         </div>
       </div>
@@ -24,6 +27,3 @@ const Index = () => {
       </div>
     </div>
   );
-};
-
-export default Index;
