@@ -21,6 +21,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
@@ -39,15 +40,21 @@ export function ForgotPasswordDialog({ open, onOpenChange }: ForgotPasswordDialo
     defaultValues: { email: "" },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Forgot password for:", values.email);
-    // Simular chamada de API
-    setTimeout(() => {
-      setIsLoading(false);
-      onOpenChange(false);
+    
+    const { error } = await supabase.auth.resetPasswordForEmail(values.email, {
+      redirectTo: `${window.location.origin}/reset-password`, // You'll need to create this page
+    });
+
+    setIsLoading(false);
+    onOpenChange(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
       toast.success("Se existir uma conta com este e-mail, enviaremos as instruções para redefinir sua senha.");
-    }, 2000);
+    }
   }
 
   return (

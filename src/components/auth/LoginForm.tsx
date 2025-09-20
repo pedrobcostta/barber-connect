@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ForgotPasswordDialog } from "./ForgotPasswordDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
@@ -36,13 +38,22 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Login data:", values);
-    // Simular chamada de API
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error("E-mail ou senha inválidos. Tente novamente.");
+    } else {
+      toast.success("Login bem-sucedido!");
+      // Here you would typically redirect the user
+    }
   }
 
   return (

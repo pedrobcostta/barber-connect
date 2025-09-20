@@ -13,6 +13,8 @@ import {
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   name: z.string().min(1, { message: "Opa, parece que faltou seu nome!" }),
@@ -34,12 +36,29 @@ export function ClientRegisterForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Client Register data:", values);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: {
+          full_name: values.name,
+          phone: values.phone,
+          role: 'cliente',
+        }
+      }
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
+      form.reset();
+    }
   }
 
   return (

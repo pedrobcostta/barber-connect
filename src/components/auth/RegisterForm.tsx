@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
 
 const passwordValidation = new RegExp(
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -56,13 +58,31 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Register data:", values);
-    // Simular chamada de API
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    
+    // We will use an Edge Function for manager registration later.
+    // For now, we'll use the standard signUp.
+    const { error } = await supabase.auth.signUp({
+      email: values.email,
+      password: values.password,
+      options: {
+        data: {
+          full_name: values.managerName,
+          cnpj: values.cnpj,
+          role: 'gestor',
+        }
+      }
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
+      form.reset();
+    }
   }
 
   return (
