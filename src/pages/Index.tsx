@@ -8,11 +8,16 @@ const Index = () => {
       <div className="text-center">
         <h1 className="text-4xl font-bold mb-4">Bem-vindo ao Barber Connect</h1>
         <p className="text-xl text-gray-600 mb-8">
-          Clique no botão abaixo para acessar a tela de autenticação.
+          Selecione o seu perfil para continuar.
         </p>
-        <Button asChild>
-          <Link to="/auth">Ir para Login/Cadastro</Link>
-        </Button>
+        <div className="flex justify-center gap-4">
+            <Button asChild>
+                <Link to="/auth">Acesso do Gestor</Link>
+            </Button>
+            <Button asChild variant="secondary">
+                <Link to="/barber-login">Acesso do Barbeiro</Link>
+            </Button>
+        </div>
       </div>
       <div className="absolute bottom-4">
         <MadeWithDyad />
