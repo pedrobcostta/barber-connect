@@ -23,6 +23,10 @@ const formSchema = z.object({
   phone: z.string().min(10, { message: "Por favor, insira um celular válido." }),
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
   password: z.string().min(6, { message: "Sua senha deve ter no mínimo 6 caracteres." }),
+  confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "As senhas não coincidem.",
+  path: ["confirmPassword"],
 });
 
 export function ClientRegisterForm() {
@@ -36,6 +40,7 @@ export function ClientRegisterForm() {
       phone: "",
       email: "",
       password: "",
+      confirmPassword: "",
     },
   });
 
@@ -117,6 +122,19 @@ export function ClientRegisterForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Crie uma Senha</FormLabel>
+              <FormControl>
+                <Input type="password" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="confirmPassword"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Confirme sua Senha</FormLabel>
               <FormControl>
                 <Input type="password" {...field} />
               </FormControl>
