@@ -15,19 +15,17 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
 import { MaskedInput } from "@/components/ui/masked-input";
 
 const formSchema = z.object({
-  name: z.string().min(1, { message: "Opa, parece que faltou seu nome!" }),
+  name: z.string().min(1, { message: "O nome é obrigatório." }),
   phone: z.string().min(10, { message: "Por favor, insira um celular válido." }),
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
-  password: z.string().min(6, { message: "Sua senha deve ter no mínimo 6 caracteres." }),
+  password: z.string().min(6, { message: "A senha deve ter no mínimo 6 caracteres." }),
 });
 
-export function ClientRegisterForm() {
+export function BarberRegisterForm() {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,7 +47,7 @@ export function ClientRegisterForm() {
         data: {
           full_name: values.name,
           phone: values.phone,
-          role: 'cliente',
+          role: 'barbeiro',
         }
       }
     });
@@ -64,7 +62,6 @@ export function ClientRegisterForm() {
       }
     } else {
       toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
-      // Don't redirect immediately, user needs to confirm email first.
       form.reset();
     }
   }
@@ -79,7 +76,7 @@ export function ClientRegisterForm() {
             <FormItem>
               <FormLabel>Nome Completo</FormLabel>
               <FormControl>
-                <Input placeholder="Como podemos te chamar?" {...field} />
+                <Input placeholder="Seu nome completo" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -90,7 +87,7 @@ export function ClientRegisterForm() {
           name="phone"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Celular (WhatsApp)</FormLabel>
+              <FormLabel>Celular</FormLabel>
               <FormControl>
                 <MaskedInput mask="(99) 99999-9999" placeholder="(00) 00000-0000" {...field} />
               </FormControl>
@@ -124,7 +121,7 @@ export function ClientRegisterForm() {
             </FormItem>
           )}
         />
-        <Button type="submit" className="w-full bg-accent hover:bg-accent/90 text-primary-foreground" disabled={isLoading}>
+        <Button type="submit" className="w-full bg-primary hover:bg-primary/90" disabled={isLoading}>
           {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           Cadastrar
         </Button>

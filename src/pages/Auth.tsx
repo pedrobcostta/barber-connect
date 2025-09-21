@@ -15,7 +15,7 @@ const AuthPage = () => {
         <div className="relative z-20 flex items-center text-lg font-medium">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
+            viewBox="0 0 24"
             fill="none"
             stroke="currentColor"
             strokeWidth="2"
@@ -25,14 +25,14 @@ const AuthPage = () => {
           >
             <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
           </svg>
-          Barber Connect
+          BarberCenter
         </div>
         <div className="relative z-20 mt-auto">
           <blockquote className="space-y-2">
             <p className="text-lg">
               &ldquo;A gestão da sua barbearia em um só lugar. Simples, moderno e eficiente.&rdquo;
             </p>
-            <footer className="text-sm">Equipe Barber Connect</footer>
+            <footer className="text-sm">Equipe BarberCenter</footer>
           </blockquote>
         </div>
       </div>

@@ -16,8 +16,9 @@ import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
-import { validateCNPJ } from "@/lib/utils";
-import InputMask from "react-input-mask";
+import { validateCNPJ, validateCPF } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { MaskedInput } from "@/components/ui/masked-input";
 
 const passwordValidation = new RegExp(
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/
@@ -25,7 +26,8 @@ const passwordValidation = new RegExp(
 
 const formSchema = z.object({
     barbershopName: z.string().min(1, { message: "O nome da barbearia é obrigatório." }),
-    cnpj: z.string().refine(validateCNPJ, { message: "Por favor, insira um CNPJ válido." }),
+    documentType: z.enum(["cpf", "cnpj"], { required_error: "Selecione o tipo de documento." }),
+    document: z.string().min(1, { message: "O documento é obrigatório." }),
     managerName: z.string().min(1, { message: "Seu nome é obrigatório." }),
     email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
     password: z.string().regex(passwordValidation, {
@@ -38,6 +40,13 @@ const formSchema = z.object({
   }).refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem.",
     path: ["confirmPassword"],
+  }).superRefine((data, ctx) => {
+    if (data.documentType === "cpf" && !validateCPF(data.document)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CPF inválido.", path: ["document"] });
+    }
+    if (data.documentType === "cnpj" && !validateCNPJ(data.document)) {
+      ctx.addIssue({ code: z.ZodIssueCode.custom, message: "CNPJ inválido.", path: ["document"] });
+    }
   });
 
 type RegisterFormProps = {
@@ -51,7 +60,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
     resolver: zodResolver(formSchema),
     defaultValues: {
       barbershopName: "",
-      cnpj: "",
+      documentType: "cnpj",
+      document: "",
       managerName: "",
       email: "",
       password: "",
@@ -59,6 +69,8 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
       terms: false,
     },
   });
+
+  const documentType = form.watch("documentType");
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
@@ -68,7 +80,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         email: values.email,
         password: values.password,
         managerName: values.managerName,
-        cnpj: values.cnpj,
+        cnpj: values.documentType === 'cnpj' ? values.document : null, // Pass CNPJ or CPF accordingly
         barbershopName: values.barbershopName,
       },
     });
@@ -99,11 +111,19 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
           <FormField control={form.control} name="barbershopName" render={({ field }) => (
             <FormItem><FormLabel style={{ color: "#0D131A" }}>Nome da Barbearia</FormLabel><FormControl><Input placeholder="Ex: Barber Shop Premium" {...field} /></FormControl><FormMessage /></FormItem>
           )}/>
-          <FormField control={form.control} name="cnpj" render={({ field }) => (
-            <FormItem><FormLabel style={{ color: "#0D131A" }}>CNPJ</FormLabel><FormControl>
-              <InputMask mask="99.999.999/9999-99" value={field.value} onChange={field.onChange} onBlur={field.onBlur}>
-                {(inputProps: any) => <Input {...inputProps} placeholder="00.000.000/0001-00" />}
-              </InputMask>
+          <FormField control={form.control} name="documentType" render={({ field }) => (
+            <FormItem className="space-y-2"><FormLabel>Tipo de Documento</FormLabel>
+              <FormControl>
+                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex space-x-4">
+                  <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="cnpj" /></FormControl><FormLabel className="font-normal">CNPJ</FormLabel></FormItem>
+                  <FormItem className="flex items-center space-x-2"><FormControl><RadioGroupItem value="cpf" /></FormControl><FormLabel className="font-normal">CPF</FormLabel></FormItem>
+                </RadioGroup>
+              </FormControl><FormMessage />
+            </FormItem>
+          )}/>
+          <FormField control={form.control} name="document" render={({ field }) => (
+            <FormItem><FormLabel style={{ color: "#0D131A" }}>{documentType === 'cnpj' ? 'CNPJ' : 'CPF'}</FormLabel><FormControl>
+              <MaskedInput mask={documentType === 'cnpj' ? "99.999.999/9999-99" : "999.999.999-99"} placeholder={documentType === 'cnpj' ? "00.000.000/0001-00" : "000.000.000-00"} {...field} />
             </FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="managerName" render={({ field }) => (

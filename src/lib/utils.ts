@@ -5,6 +5,14 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+export function validateCPF(cpf: string): boolean {
+  cpf = cpf.replace(/[^\d]+/g, '');
+  if (cpf.length !== 11 || !!cpf.match(/(\d)\1{10}/)) return false;
+  const digits = cpf.split('').map(Number);
+  const validator = (n: number) => (digits.slice(0, n).reduce((sum, digit, index) => sum + digit * (n + 1 - index), 0) * 10) % 11 % 10;
+  return validator(9) === digits[9] && validator(10) === digits[10];
+}
+
 export function validateCNPJ(cnpj: string): boolean {
   cnpj = cnpj.replace(/[^\d]+/g, "");
 

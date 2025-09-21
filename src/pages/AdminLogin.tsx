@@ -16,7 +16,7 @@ const AdminLoginPage = () => {
       <div className="w-full max-w-sm mx-auto grid gap-6 p-8 rounded-md shadow-sm bg-[#FFFFFF]">
         <div className="text-center space-y-2">
             <h1 className="text-xl font-semibold tracking-tight text-[#111827]">
-                Barber Connect - Admin Panel
+                BarberCenter - Admin Panel
             </h1>
         </div>
         {loginStep === "credentials" ? (
