@@ -1,27 +1,53 @@
 import * as React from "react";
-import InputMask, { Props as InputMaskProps } from "react-input-mask";
-import { Input, InputProps } from "@/components/ui/input";
+import { Input, type InputProps } from "@/components/ui/input";
 
-// Combine props from react-input-mask and your custom Input component
-interface MaskedInputProps extends Omit<InputMaskProps, 'children'> {
-  inputProps?: InputProps;
-  children?: React.ReactNode; // Make children optional
+interface MaskedInputProps extends InputProps {
+  mask: string;
 }
 
 const MaskedInput = React.forwardRef<HTMLInputElement, MaskedInputProps>(
-  ({ mask, value, onChange, onBlur, name, inputProps, ...props }, ref) => {
+  ({ mask, value, onChange, ...props }, ref) => {
+    const applyMask = (inputValue: string) => {
+      const numericValue = inputValue.replace(/\D/g, "");
+      let maskedValue = "";
+      let valueIndex = 0;
+
+      for (let i = 0; i < mask.length && valueIndex < numericValue.length; i++) {
+        if (mask[i] === "9") {
+          maskedValue += numericValue[valueIndex++];
+        } else {
+          maskedValue += mask[i];
+        }
+      }
+      return maskedValue;
+    };
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const rawValue = e.target.value;
+      const newMaskedValue = applyMask(rawValue);
+      
+      // Create a new event to pass up to react-hook-form
+      const syntheticEvent = {
+        ...e,
+        target: {
+          ...e.target,
+          value: newMaskedValue,
+        },
+      };
+
+      // @ts-ignore
+      onChange?.(syntheticEvent);
+    };
+
+    const maskedValue = value ? applyMask(String(value)) : "";
+
     return (
-      <InputMask
-        mask={mask}
-        value={value}
-        onChange={onChange}
-        onBlur={onBlur}
-        name={name}
+      <Input
         {...props}
-      >
-        {/* The `any` type is used here because the props passed by InputMask don't perfectly match what the shadcn Input expects, but it works in practice. */}
-        {(inputMaskProps: any) => <Input {...inputMaskProps} {...inputProps} ref={ref} />}
-      </InputMask>
+        ref={ref}
+        value={maskedValue}
+        onChange={handleChange}
+      />
     );
   }
 );
