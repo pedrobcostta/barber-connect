@@ -80,7 +80,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
         email: values.email,
         password: values.password,
         managerName: values.managerName,
-        cnpj: values.documentType === 'cnpj' ? values.document : null, // Pass CNPJ or CPF accordingly
+        document: values.document,
         barbershopName: values.barbershopName,
       },
     });
@@ -133,7 +133,7 @@ export function RegisterForm({ onSwitchToLogin }: RegisterFormProps) {
             <FormItem><FormLabel style={{ color: "#0D131A" }}>E-mail de Acesso</FormLabel><FormControl><Input placeholder="seu@email.com" {...field} /></FormControl><FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="password" render={({ field }) => (
-            <FormItem><FormLabel style={{ color: "#0D131A" }}>Crie uma Senha Forte</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormItem>
+            <FormItem><FormLabel style={{ color: "#0D131A" }}>Crie uma Senha Forte</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormMessage /></FormItem>
           )}/>
           <FormField control={form.control} name="confirmPassword" render={({ field }) => (
             <FormItem><FormLabel style={{ color: "#0D131A" }}>Confirme sua Senha</FormLabel><FormControl><Input type="password" {...field} /></FormControl><FormMessage /></FormItem>

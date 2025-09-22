@@ -69,7 +69,6 @@ export function ClientRegisterForm() {
       }
     } else {
       toast.success("Cadastro realizado! Verifique seu e-mail para confirmar sua conta.");
-      // Don't redirect immediately, user needs to confirm email first.
       form.reset();
     }
   }

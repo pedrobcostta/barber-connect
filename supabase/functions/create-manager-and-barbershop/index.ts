@@ -13,11 +13,11 @@ serve(async (req) => {
   }
 
   try {
-    const { email, password, managerName, cnpj, barbershopName } = await req.json()
+    const { email, password, managerName, document, barbershopName } = await req.json()
 
-    // Input validation
-    if (!email || !password || !managerName || !cnpj || !barbershopName) {
-      return new Response(JSON.stringify({ error: 'Missing required fields' }), {
+    // More robust input validation to prevent 400 errors
+    if (!email || !password || !managerName || !document || !barbershopName) {
+      return new Response(JSON.stringify({ error: 'Todos os campos são obrigatórios.' }), {
         status: 400,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       })
@@ -32,19 +32,19 @@ serve(async (req) => {
     const { data: userData, error: userError } = await supabaseAdmin.auth.admin.createUser({
       email: email,
       password: password,
-      email_confirm: true, // Set to true to send a confirmation email
+      email_confirm: true,
       user_metadata: {
         full_name: managerName,
-        cnpj: cnpj,
+        // The 'cnpj' field in profiles table will store either CPF or CNPJ
+        cnpj: document, 
         role: 'gestor',
       },
     })
 
     if (userError) {
-      // Handle specific errors like user already exists
       if (userError.message.includes('already registered')) {
         return new Response(JSON.stringify({ error: 'Este e-mail já está cadastrado.' }), {
-          status: 409, // Conflict
+          status: 409,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         })
       }
@@ -62,12 +62,12 @@ serve(async (req) => {
       })
 
     if (barbershopError) {
-      // If barbershop creation fails, delete the created user to keep data consistent
+      // If barbershop creation fails, delete the user to maintain data consistency
       await supabaseAdmin.auth.admin.deleteUser(newUserId)
       throw barbershopError
     }
 
-    return new Response(JSON.stringify({ message: 'Manager and barbershop created successfully' }), {
+    return new Response(JSON.stringify({ message: 'Gestor e barbearia criados com sucesso!' }), {
       status: 201,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     })
