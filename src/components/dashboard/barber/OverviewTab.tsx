@@ -204,7 +204,7 @@ const OverviewSkeleton = () => (
         <Card className="xl:col-span-2">
             <CardHeader><Skeleton className="h-6 w-1/3" /><Skeleton className="h-4 w-2/3 mt-2" /></CardHeader>
             <CardContent><Skeleton className="h-32 w-full" /></CardContent>
-        </d>
+        </Card>
         <Card>
             <CardHeader><Skeleton className="h-6 w-1/3" /><Skeleton className="h-4 w-2/3 mt-2" /></CardHeader>
             <CardContent className="space-y-4"><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /></CardContent>
