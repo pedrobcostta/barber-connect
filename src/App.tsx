@@ -17,6 +17,7 @@ import BarberClientDetailsPage from "./pages/BarberClientDetails";
 import BarberFinancialPage from "./pages/BarberFinancial";
 import BarberReportsPage from "./pages/BarberReports";
 import BarberSettingsPage from "./pages/BarberSettings";
+import ManagerDashboardPage from "./pages/ManagerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -32,7 +33,11 @@ const App = () => (
           <Route path="/barber/auth" element={<BarberAuthPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
           <Route path="/cliente/auth" element={<ClientAuthPage />} />
-          <Route path="/dashboard" element={<DashboardPage />} />
+          
+          {/* Manager Routes */}
+          <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
+
+          {/* Barber Routes */}
           <Route path="/barber/dashboard" element={<BarberDashboardPage />} />
           <Route path="/barber/agenda" element={<BarberAgendaPage />} />
           <Route path="/barber/clientes" element={<BarberClientsPage />} />
@@ -40,6 +45,10 @@ const App = () => (
           <Route path="/barber/financeiro" element={<BarberFinancialPage />} />
           <Route path="/barber/analytics" element={<BarberReportsPage />} />
           <Route path="/barber/settings" element={<BarberSettingsPage />} />
+
+          {/* Generic/Old Routes */}
+          <Route path="/dashboard" element={<DashboardPage />} />
+
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

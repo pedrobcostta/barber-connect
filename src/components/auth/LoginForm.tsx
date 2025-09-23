@@ -43,14 +43,13 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
     
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data: signInData, error } = await supabase.auth.signInWithPassword({
       email: values.email,
       password: values.password,
     });
 
-    setIsLoading(false);
-
     if (error) {
+      setIsLoading(false);
       if (error.message === 'Invalid login credentials') {
         toast.error("E-mail ou senha inválidos. Tente novamente.");
       } else if (error.message === 'Email not confirmed') {
@@ -58,10 +57,26 @@ export function LoginForm({ onSwitchToRegister }: LoginFormProps) {
       } else {
         toast.error("Ocorreu um erro ao fazer login. Tente novamente.");
       }
-    } else {
-      toast.success("Login bem-sucedido!");
-      navigate('/dashboard');
+      return;
     }
+
+    if (signInData.user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('role')
+        .eq('id', signInData.user.id)
+        .single();
+
+      toast.success("Login bem-sucedido!");
+
+      if (profile?.role === 'gestor') {
+        navigate('/manager/dashboard');
+      } else {
+        // Default redirect for other roles, can be expanded later
+        navigate('/dashboard');
+      }
+    }
+    setIsLoading(false);
   }
 
   return (
