@@ -1,6 +1,5 @@
-import { Bell, Calendar, Home, LineChart, Scissors, Users, Wallet } from "lucide-react";
+import { Bell, Calendar, Home, LineChart, Scissors, Users, Wallet, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { Badge } from "@/components/ui/badge";
 
 const navLinks = [
     { to: "/barber/dashboard", icon: Home, label: "Visão Geral" },
@@ -9,6 +8,7 @@ const navLinks = [
     { to: "/barber/servicos", icon: Scissors, label: "Serviços" },
     { to: "/barber/financeiro", icon: Wallet, label: "Financeiro" },
     { to: "/barber/analytics", icon: LineChart, label: "Relatórios" },
+    { to: "/barber/settings", icon: Settings, label: "Configurações" },
 ];
 
 export function SidebarNav() {

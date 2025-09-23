@@ -16,6 +16,7 @@ import BarberClientsPage from "./pages/BarberClients";
 import BarberClientDetailsPage from "./pages/BarberClientDetails";
 import BarberFinancialPage from "./pages/BarberFinancial";
 import BarberReportsPage from "./pages/BarberReports";
+import BarberSettingsPage from "./pages/BarberSettings";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +39,7 @@ const App = () => (
           <Route path="/barber/clientes/:clientId" element={<BarberClientDetailsPage />} />
           <Route path="/barber/financeiro" element={<BarberFinancialPage />} />
           <Route path="/barber/analytics" element={<BarberReportsPage />} />
+          <Route path="/barber/settings" element={<BarberSettingsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
