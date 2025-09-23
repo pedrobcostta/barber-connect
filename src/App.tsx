@@ -12,6 +12,8 @@ import ClientAuthPage from "./pages/ClientAuth";
 import DashboardPage from "./pages/Dashboard";
 import BarberDashboardPage from "./pages/BarberDashboard";
 import BarberAgendaPage from "./pages/BarberAgenda";
+import BarberClientsPage from "./pages/BarberClients";
+import BarberClientDetailsPage from "./pages/BarberClientDetails";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +32,8 @@ const App = () => (
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/barber/dashboard" element={<BarberDashboardPage />} />
           <Route path="/barber/agenda" element={<BarberAgendaPage />} />
+          <Route path="/barber/clientes" element={<BarberClientsPage />} />
+          <Route path="/barber/clientes/:clientId" element={<BarberClientDetailsPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
