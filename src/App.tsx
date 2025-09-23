@@ -19,6 +19,8 @@ import BarberReportsPage from "./pages/BarberReports";
 import BarberSettingsPage from "./pages/BarberSettings";
 import ManagerDashboardPage from "./pages/ManagerDashboard";
 import ManagerAgendaPage from "./pages/ManagerAgenda";
+import ManagerClientsPage from "./pages/ManagerClients";
+import ManagerClientDetailsPage from "./pages/ManagerClientDetails";
 
 const queryClient = new QueryClient();
 
@@ -38,6 +40,8 @@ const App = () => (
           {/* Manager Routes */}
           <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
           <Route path="/manager/agenda" element={<ManagerAgendaPage />} />
+          <Route path="/manager/clients" element={<ManagerClientsPage />} />
+          <Route path="/manager/clients/:clientId" element={<ManagerClientDetailsPage />} />
 
           {/* Barber Routes */}
           <Route path="/barber/dashboard" element={<BarberDashboardPage />} />

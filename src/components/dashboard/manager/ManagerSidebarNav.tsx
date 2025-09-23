@@ -4,6 +4,7 @@ import { NavLink } from "react-router-dom";
 const navLinks = [
     { to: "/manager/dashboard", icon: Home, label: "Visão Geral" },
     { to: "/manager/agenda", icon: Calendar, label: "Agenda" },
+    { to: "/manager/clients", icon: Users, label: "Clientes" },
     { to: "/manager/team", icon: Users, label: "Equipe" },
     { to: "/manager/services", icon: Scissors, label: "Serviços" },
     { to: "/manager/financial", icon: Wallet, label: "Financeiro" },
@@ -15,7 +16,7 @@ export function ManagerSidebarNav() {
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navLinks.map(({ to, icon: Icon, label }) => (
         <NavLink
-          key={label}
+          key={to} // Using 'to' as the key since it's unique
           to={to}
           end={to === "/manager/dashboard"}
           className={({ isActive }) =>
