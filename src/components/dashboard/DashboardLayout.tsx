@@ -1,5 +1,6 @@
 import { SidebarNav } from "./SidebarNav";
 import { Header } from "./Header";
+import { Scissors } from "lucide-react";
 
 type DashboardLayoutProps = {
     children: React.ReactNode;
