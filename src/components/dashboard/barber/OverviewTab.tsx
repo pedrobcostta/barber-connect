@@ -5,26 +5,8 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { useState, useEffect } from 'react';
 import { DollarSign, Users, Scissors, CalendarDays, AlertCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
-
-// Mock data - replace with actual Supabase calls
-const mockKpis = {
-  dailyRevenue: 450.50,
-  dailyAppointments: 12,
-  newClients: 3,
-};
-
-const mockAppointments = [
-  { time: '14:00', client: 'Carlos Silva', service: 'Corte Degradê' },
-  { time: '15:00', client: 'João Pereira', service: 'Barba e Cabelo' },
-  { time: '16:30', client: 'Marcos Andrade', service: 'Corte Simples' },
-];
-
-const mockTopServices = [
-    { name: 'Corte Degradê', value: 45 },
-    { name: 'Barba e Cabelo', value: 30 },
-    { name: 'Corte Simples', value: 15 },
-    { name: 'Hidratação', value: 10 },
-];
+import { supabase } from '@/integrations/supabase/client';
+import { format } from 'date-fns';
 
 export function OverviewTab() {
   const [kpis, setKpis] = useState<any>(null);
@@ -38,14 +20,63 @@ export function OverviewTab() {
       setIsLoading(true);
       setError(null);
       try {
-        // Simulate API calls
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        // To test error state, uncomment the line below
-        // throw new Error("Falha ao buscar dados do dashboard.");
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) throw new Error("Usuário não autenticado. Por favor, faça login.");
+
+        const { data: barberProfile, error: barberError } = await supabase
+          .from('barbers')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (barberError || !barberProfile) throw new Error("Perfil de barbeiro não encontrado.");
+
+        const today = new Date();
+        const todayStart = new Date(today.setHours(0, 0, 0, 0)).toISOString();
+        const todayEnd = new Date(today.setHours(23, 59, 59, 999)).toISOString();
+        const now = new Date().toISOString();
+
+        const { data: todayAppointments, error: appointmentsError } = await supabase
+          .from('appointments')
+          .select('*, service:services(price)')
+          .eq('barber_id', barberProfile.id)
+          .gte('start_time', todayStart)
+          .lte('start_time', todayEnd);
         
-        setKpis(mockKpis);
-        setAppointments(mockAppointments);
-        setTopServices(mockTopServices);
+        if (appointmentsError) throw appointmentsError;
+
+        const dailyRevenue = todayAppointments.reduce((sum, appt) => sum + (appt.service?.price || 0), 0);
+        
+        setKpis({
+          dailyRevenue: dailyRevenue,
+          dailyAppointments: todayAppointments.length,
+          newClients: 3, // Mocked: Requires a more complex query
+        });
+
+        const { data: upcomingAppointments, error: upcomingError } = await supabase
+          .from('appointments')
+          .select('start_time, client:profiles(full_name), service:services(name)')
+          .eq('barber_id', barberProfile.id)
+          .gte('start_time', now)
+          .lte('start_time', todayEnd)
+          .order('start_time')
+          .limit(3);
+
+        if (upcomingError) throw upcomingError;
+        
+        const formattedAppointments = upcomingAppointments.map(appt => ({
+            time: format(new Date(appt.start_time), 'HH:mm'),
+            client: appt.client?.full_name || 'Cliente',
+            service: appt.service?.name || 'Serviço'
+        }));
+        setAppointments(formattedAppointments);
+
+        // Mocked: Requires aggregation query (RPC function)
+        setTopServices([
+            { name: 'Corte Degradê', value: 45 },
+            { name: 'Barba e Cabelo', value: 30 },
+            { name: 'Corte Simples', value: 15 },
+        ]);
 
       } catch (err) {
         setError(err instanceof Error ? err.message : "Ocorreu um erro desconhecido.");
@@ -173,7 +204,7 @@ const OverviewSkeleton = () => (
         <Card className="xl:col-span-2">
             <CardHeader><Skeleton className="h-6 w-1/3" /><Skeleton className="h-4 w-2/3 mt-2" /></CardHeader>
             <CardContent><Skeleton className="h-32 w-full" /></CardContent>
-        </Card>
+        </d>
         <Card>
             <CardHeader><Skeleton className="h-6 w-1/3" /><Skeleton className="h-4 w-2/3 mt-2" /></CardHeader>
             <CardContent className="space-y-4"><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /><Skeleton className="h-8 w-full" /></CardContent>
