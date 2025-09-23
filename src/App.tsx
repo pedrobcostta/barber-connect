@@ -10,6 +10,7 @@ import BarberAuthPage from "./pages/BarberAuth";
 import AdminLoginPage from "./pages/AdminLogin";
 import ClientAuthPage from "./pages/ClientAuth";
 import DashboardPage from "./pages/Dashboard";
+import BarberDashboardPage from "./pages/BarberDashboard";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/admin" element={<AdminLoginPage />} />
           <Route path="/cliente/auth" element={<ClientAuthPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/barber/dashboard" element={<BarberDashboardPage />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
