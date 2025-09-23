@@ -8,7 +8,7 @@ const navLinks = [
     { to: "/barber/clientes", icon: Users, label: "Clientes" },
     { to: "/barber/servicos", icon: Scissors, label: "Serviços" },
     { to: "/barber/financeiro", icon: Wallet, label: "Financeiro" },
-    { to: "/barber/analytics", icon: LineChart, label: "Análises" },
+    { to: "/barber/analytics", icon: LineChart, label: "Relatórios" },
 ];
 
 export function SidebarNav() {
