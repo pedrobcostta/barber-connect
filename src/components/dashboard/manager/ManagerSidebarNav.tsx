@@ -1,8 +1,9 @@
-import { Home, Users, Scissors, Wallet, Settings } from "lucide-react";
+import { Home, Users, Scissors, Wallet, Settings, Calendar } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navLinks = [
     { to: "/manager/dashboard", icon: Home, label: "Visão Geral" },
+    { to: "/manager/agenda", icon: Calendar, label: "Agenda" },
     { to: "/manager/team", icon: Users, label: "Equipe" },
     { to: "/manager/services", icon: Scissors, label: "Serviços" },
     { to: "/manager/financial", icon: Wallet, label: "Financeiro" },
