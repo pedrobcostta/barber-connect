@@ -30,6 +30,7 @@ import ManagerMarketingPage from "./pages/ManagerMarketing";
 import ManagerReportsPage from "./pages/ManagerReports";
 import ManagerUsersPage from "./pages/ManagerUsers";
 import ClientDashboardPage from "./pages/ClientDashboard";
+import ClientAppointmentsPage from "./pages/ClientAppointments";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const App = () => (
 
           {/* Client Routes */}
           <Route path="/client/dashboard" element={<ClientDashboardPage />} />
+          <Route path="/client/appointments" element={<ClientAppointmentsPage />} />
 
           {/* Generic/Old Routes */}
           <Route path="/dashboard" element={<DashboardPage />} />
