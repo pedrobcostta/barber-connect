@@ -49,13 +49,33 @@ export function Admin2FAForm({ email }: Admin2FAFormProps) {
       type: 'totp',
     });
 
-    setIsLoading(false);
-
     if (error) {
+      setIsLoading(false);
       toast.error("Código de verificação inválido. Tente novamente.");
     } else {
-      toast.success("Login de administrador bem-sucedido!");
-      navigate('/dashboard');
+      // Fetch user role after successful login
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', user.id)
+          .single();
+
+        if (profile?.role === 'admin') {
+          toast.success("Login de administrador bem-sucedido!");
+          navigate('/admin/dashboard');
+        } else {
+          toast.error("Acesso negado. Esta conta não tem privilégios de administrador.");
+          await supabase.auth.signOut();
+          navigate('/admin');
+        }
+      } else {
+         toast.error("Não foi possível verificar a sessão. Tente novamente.");
+         await supabase.auth.signOut();
+         navigate('/admin');
+      }
+      setIsLoading(false);
     }
   }
 
