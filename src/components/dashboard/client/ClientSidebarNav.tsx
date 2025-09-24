@@ -1,10 +1,11 @@
-import { Home, Calendar, Wallet } from "lucide-react";
+import { Home, Calendar, Wallet, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navLinks = [
     { to: "/client/dashboard", icon: Home, label: "Visão Geral" },
     { to: "/client/appointments", icon: Calendar, label: "Meus Agendamentos" },
     { to: "/client/financial", icon: Wallet, label: "Financeiro" },
+    { to: "/client/settings", icon: Settings, label: "Configurações" },
 ];
 
 export function ClientSidebarNav() {
