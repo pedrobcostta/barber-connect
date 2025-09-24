@@ -11,50 +11,28 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useState } from "react";
 import { Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
   password: z.string().min(1, { message: "A senha é obrigatória." }),
 });
 
+export type AdminLoginCredentials = z.infer<typeof formSchema>;
+
 type AdminLoginFormProps = {
-  onSuccess: (email: string) => void;
+  onSubmit: (values: AdminLoginCredentials) => void;
+  isLoading: boolean;
 };
 
-export function AdminLoginForm({ onSuccess }: AdminLoginFormProps) {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const form = useForm<z.infer<typeof formSchema>>({
+export function AdminLoginForm({ onSubmit, isLoading }: AdminLoginFormProps) {
+  const form = useForm<AdminLoginCredentials>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       email: "",
       password: "",
     },
   });
-
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    setIsLoading(true);
-    
-    const { error } = await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-    });
-
-    setIsLoading(false);
-
-    if (error) {
-      toast.error("E-mail ou senha de administrador inválidos.");
-    } else {
-      // For users with 2FA, signInWithPassword doesn't complete the login.
-      // It prepares the session for an OTP verification.
-      // We proceed to the 2FA step.
-      onSuccess(values.email);
-    }
-  }
 
   return (
     <Form {...form}>
