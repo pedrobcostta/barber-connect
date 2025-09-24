@@ -36,6 +36,7 @@ import ClientSettingsPage from "./pages/ClientSettings";
 import AdminDashboardPage from "./pages/AdminDashboard";
 import CreateAdminPage from "./pages/CreateAdmin";
 import AdminBarbershopsPage from "./pages/AdminBarbershops";
+import AdminFinancialPage from "./pages/AdminFinancial";
 
 const queryClient = new QueryClient();
 
@@ -56,6 +57,7 @@ const App = () => (
           {/* Admin Routes */}
           <Route path="/admin/dashboard" element={<AdminDashboardPage />} />
           <Route path="/admin/barbershops" element={<AdminBarbershopsPage />} />
+          <Route path="/admin/financial" element={<AdminFinancialPage />} />
 
           {/* Manager Routes */}
           <Route path="/manager/dashboard" element={<ManagerDashboardPage />} />
