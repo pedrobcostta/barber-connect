@@ -27,6 +27,7 @@ import ManagerBarberDetailsPage from "./pages/ManagerBarberDetails";
 import ManagerSettingsPage from "./pages/ManagerSettings";
 import ManagerFinancialPage from "./pages/ManagerFinancial";
 import ManagerMarketingPage from "./pages/ManagerMarketing";
+import ManagerReportsPage from "./pages/ManagerReports";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,7 @@ const App = () => (
           <Route path="/manager/settings" element={<ManagerSettingsPage />} />
           <Route path="/manager/financial" element={<ManagerFinancialPage />} />
           <Route path="/manager/marketing" element={<ManagerMarketingPage />} />
+          <Route path="/manager/reports" element={<ManagerReportsPage />} />
 
           {/* Barber Routes */}
           <Route path="/barber/dashboard" element={<BarberDashboardPage />} />
