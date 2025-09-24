@@ -10,6 +10,7 @@ const navLinks = [
     { to: "/manager/financial", icon: Wallet, label: "Financeiro" },
     { to: "/manager/marketing", icon: Megaphone, label: "Marketing" },
     { to: "/manager/reports", icon: LineChart, label: "Relatórios" },
+    { to: "/manager/users", icon: Users, label: "Usuários" },
     { to: "/manager/settings", icon: Settings, label: "Configurações" },
 ];
 
