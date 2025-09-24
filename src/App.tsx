@@ -34,6 +34,7 @@ import ClientAppointmentsPage from "./pages/ClientAppointments";
 import ClientFinancialPage from "./pages/ClientFinancial";
 import ClientSettingsPage from "./pages/ClientSettings";
 import AdminDashboardPage from "./pages/AdminDashboard";
+import CreateAdminPage from "./pages/CreateAdmin";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/barber/auth" element={<BarberAuthPage />} />
           <Route path="/admin" element={<AdminLoginPage />} />
+          <Route path="/create-admin" element={<CreateAdminPage />} />
           <Route path="/cliente/auth" element={<ClientAuthPage />} />
           
           {/* Admin Routes */}
