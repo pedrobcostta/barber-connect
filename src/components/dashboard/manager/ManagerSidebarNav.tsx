@@ -1,4 +1,4 @@
-import { Home, Users, Scissors, Wallet, Settings, Calendar } from "lucide-react";
+import { Home, Users, Scissors, Wallet, Settings, Calendar, Megaphone } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navLinks = [
@@ -8,6 +8,7 @@ const navLinks = [
     { to: "/manager/team", icon: Users, label: "Equipe" },
     { to: "/manager/services", icon: Scissors, label: "Serviços" },
     { to: "/manager/financial", icon: Wallet, label: "Financeiro" },
+    { to: "/manager/marketing", icon: Megaphone, label: "Marketing" },
     { to: "/manager/settings", icon: Settings, label: "Configurações" },
 ];
 
@@ -16,7 +17,7 @@ export function ManagerSidebarNav() {
     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
       {navLinks.map(({ to, icon: Icon, label }) => (
         <NavLink
-          key={to} // Using 'to' as the key since it's unique
+          key={to}
           to={to}
           end={to === "/manager/dashboard"}
           className={({ isActive }) =>
@@ -31,4 +32,3 @@ export function ManagerSidebarNav() {
       ))}
     </nav>
   );
-}
