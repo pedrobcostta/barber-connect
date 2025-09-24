@@ -14,6 +14,9 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
 import { ForgotPasswordDialog } from "./ForgotPasswordDialog";
+import { supabase } from "@/integrations/supabase/client";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 
 const formSchema = z.object({
   email: z.string().email({ message: "Por favor, insira um e-mail válido." }),
@@ -23,6 +26,7 @@ const formSchema = z.object({
 export function ClientLoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [isForgotPasswordOpen, setIsForgotPasswordOpen] = useState(false);
+  const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -32,12 +36,22 @@ export function ClientLoginForm() {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsLoading(true);
-    console.log("Client Login data:", values);
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
+    
+    const { error } = await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+    });
+
+    setIsLoading(false);
+
+    if (error) {
+      toast.error("E-mail ou senha inválidos. Tente novamente.");
+    } else {
+      toast.success("Login bem-sucedido!");
+      navigate('/client/dashboard');
+    }
   }
 
   return (
