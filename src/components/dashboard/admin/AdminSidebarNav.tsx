@@ -1,4 +1,4 @@
-import { Home, Building, Users, Wallet, Megaphone } from "lucide-react";
+import { Home, Building, Users, Wallet, Megaphone, LineChart } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navLinks = [
@@ -6,6 +6,7 @@ const navLinks = [
     { to: "/admin/barbershops", icon: Building, label: "Barbearias" },
     { to: "/admin/financial", icon: Wallet, label: "Financeiro" },
     { to: "/admin/marketing", icon: Megaphone, label: "Marketing" },
+    { to: "/admin/reports", icon: LineChart, label: "Relatórios" },
     { to: "/admin/users", icon: Users, label: "Usuários" },
 ];
 
