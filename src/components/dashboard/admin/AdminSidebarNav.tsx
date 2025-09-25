@@ -1,4 +1,4 @@
-import { Home, Building, Users, Wallet, Megaphone, LineChart } from "lucide-react";
+import { Home, Building, Users, Wallet, Megaphone, LineChart, Settings } from "lucide-react";
 import { NavLink } from "react-router-dom";
 
 const navLinks = [
@@ -7,7 +7,7 @@ const navLinks = [
     { to: "/admin/financial", icon: Wallet, label: "Financeiro" },
     { to: "/admin/marketing", icon: Megaphone, label: "Marketing" },
     { to: "/admin/reports", icon: LineChart, label: "Relatórios" },
-    { to: "/admin/users", icon: Users, label: "Usuários" },
+    { to: "/admin/settings", icon: Settings, label: "Usuários e Configurações" },
 ];
 
 export function AdminSidebarNav() {
